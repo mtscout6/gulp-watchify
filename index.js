@@ -14,12 +14,16 @@ module.exports = function(taskCallback) {
         }
         var bundle
         if (opt.watch !== false) {
-            bundle = watchify(opt)
-            cache[path] = bundle
+            bundle = watchify(opt);
+            cache[path] = bundle;
             bundle.on('update', function() {
                 bundle.updateStatus = 'updated'
                 taskCallback(plugin)
-            })
+            });
+            bundle.on('error', function(err) {
+                gutil.log(err);
+                throw err;
+            });
         } else {
             bundle = watchify.browserify(opt)
         }
